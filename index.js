@@ -4,16 +4,26 @@ const server = express();
 
 const fetch = require('node-fetch');
 
+
+async function getReposAsync () {
+
+  let response = await fetch('https://api.github.com/users/takenet/repos')
+  let data = await response.json();
+  return data;
+  
+}
+
+
 server.use(express.json());
-
-
-fetch('https://api.github.com/users/takenet/repos')
-  .then(res => res.json())
-  .then(json => console.log(json));
-
-
 server.get("/repos", (req, res) => {
-  return res.json(fetch);
+  
+    getReposAsync().then(result => {
+        res.status(200).json(result)
+    }).catch( err =>{
+        res.status(500).json(err)
+    })
+
+  //return res.status(200).json({'d':'a'});
 });
 
 
